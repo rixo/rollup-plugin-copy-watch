@@ -1,4 +1,6 @@
-# rollup-plugin-copy
+# rollup-plugin-copy-watch
+
+A fork of [rollup-plugin-copy](https://github.com/vladshcherbin/rollup-plugin-copy) with an additional `watch` to watch other sources than just Rollup's bundle content (e.g. your static assets directory).
 
 [![Build Status](https://travis-ci.org/vladshcherbin/rollup-plugin-copy.svg?branch=master)](https://travis-ci.org/vladshcherbin/rollup-plugin-copy)
 [![Codecov](https://codecov.io/gh/vladshcherbin/rollup-plugin-copy/branch/master/graph/badge.svg)](https://codecov.io/gh/vladshcherbin/rollup-plugin-copy)
@@ -9,17 +11,17 @@ Copy files and folders, with glob support.
 
 ```bash
 # yarn
-yarn add rollup-plugin-copy -D
+yarn add rollup-plugin-copy-watch -D
 
 # npm
-npm install rollup-plugin-copy -D
+npm install rollup-plugin-copy-watch -D
 ```
 
 ## Usage
 
 ```js
 // rollup.config.js
-import copy from 'rollup-plugin-copy'
+import copy from 'rollup-plugin-copy-watch'
 
 export default {
   input: 'src/index.js',
@@ -29,6 +31,10 @@ export default {
   },
   plugins: [
     copy({
+      // the watch option is passed directly to Chokidar, so it can be a file,
+      // dir, array or glob(s)
+      watch: 'static',
+
       targets: [
         { src: 'src/index.html', dest: 'dist/public' },
         { src: ['assets/fonts/arial.woff', 'assets/fonts/arial.woff2'], dest: 'dist/public/fonts' },
@@ -41,171 +47,19 @@ export default {
 
 ### Configuration
 
-There are some useful options:
+The configuration is exactly the same as [rollup-plugin-copy](https://github.com/vladshcherbin/rollup-plugin-copy#configuration), with just one option added. Refer to the original plugin for all other options.
 
-#### targets
+#### watch
 
-Type: `Array` | Default: `[]`
+Type: `string|string[]` Default: `null`
 
-Array of targets to copy. A target is an object with properties:
+Paths to files, dirs to be watched recursively, or glob patterns.
 
-- **src** (`string` `Array`): Path or glob of what to copy
-- **dest** (`string` `Array`): One or more destinations where to copy
-- **rename** (`string` `Function`): Change destination file or folder name
-- **transform** (`Function`): Modify file contents
-
-Each object should have **src** and **dest** properties, **rename** and **transform** are optional. [globby](https://github.com/sindresorhus/globby) is used inside, check it for [glob pattern](https://github.com/sindresorhus/globby#globbing-patterns) examples.
-
-##### File
-
-```js
-copy({
-  targets: [{ src: 'src/index.html', dest: 'dist/public' }]
-})
-```
-
-##### Folder
-
-```js
-copy({
-  targets: [{ src: 'assets/images', dest: 'dist/public' }]
-})
-```
-
-##### Glob
-
-```js
-copy({
-  targets: [{ src: 'assets/*', dest: 'dist/public' }]
-})
-```
-
-##### Glob: multiple items
-
-```js
-copy({
-  targets: [{ src: ['src/index.html', 'src/styles.css', 'assets/images'], dest: 'dist/public' }]
-})
-```
-
-##### Glob: negated patterns
-
-```js
-copy({
-  targets: [{ src: ['assets/images/**/*', '!**/*.gif'], dest: 'dist/public/images' }]
-})
-```
-
-##### Multiple targets
-
-```js
-copy({
-  targets: [
-    { src: 'src/index.html', dest: 'dist/public' },
-    { src: 'assets/images/**/*', dest: 'dist/public/images' }
-  ]
-})
-```
-
-##### Multiple destinations
-
-```js
-copy({
-  targets: [{ src: 'src/index.html', dest: ['dist/public', 'build/public'] }]
-})
-```
-
-##### Rename with a string
-
-```js
-copy({
-  targets: [{ src: 'src/app.html', dest: 'dist/public', rename: 'index.html' }]
-})
-```
-
-##### Rename with a function
-
-```js
-copy({
-  targets: [{
-    src: 'assets/docs/*',
-    dest: 'dist/public/docs',
-    rename: (name, extension) => `${name}-v1.${extension}`
-  }]
-})
-```
-
-##### Transform file contents
-
-```js
-copy({
-  targets: [{
-    src: 'src/index.html',
-    dest: 'dist/public',
-    transform: (contents) => contents.toString().replace('__SCRIPT__', 'app.js')
-  }]
-})
-```
-
-#### verbose
-
-Type: `boolean` | Default: `false`
-
-Output copied items to console.
-
-```js
-copy({
-  targets: [{ src: 'assets/*', dest: 'dist/public' }],
-  verbose: true
-})
-```
-
-#### hook
-
-Type: `string` | Default: `buildEnd`
-
-[Rollup hook](https://rollupjs.org/guide/en/#hooks) the plugin should use. By default, plugin runs when rollup has finished bundling, before bundle is written to disk.
-
-```js
-copy({
-  targets: [{ src: 'assets/*', dest: 'dist/public' }],
-  hook: 'writeBundle'
-})
-```
-
-#### copyOnce
-
-Type: `boolean` | Default: `false`
-
-Copy items once. Useful in watch mode.
-
-```js
-copy({
-  targets: [{ src: 'assets/*', dest: 'dist/public' }],
-  copyOnce: true
-})
-```
-
-#### flatten
-
-Type: `boolean` | Default: `true`
-
-Remove the directory structure of copied files.
-
-```js
-copy({
-  targets: [{ src: 'assets/**/*', dest: 'dist/public' }],
-  flatten: false
-})
-```
-
-All other options are passed to packages, used inside:
-  - [globby](https://github.com/sindresorhus/globby)
-  - [fs-extra copy function](https://github.com/jprichardson/node-fs-extra/blob/7.0.0/docs/copy.md)
+This is passed directly to [`chokidar.watch`](https://github.com/paulmillr/chokidar#api).
 
 ## Original Author
 
-[Cédric Meuter](https://github.com/meuter)
+`rollup-plugin-copy`: [Cédric Meuter](https://github.com/meuter)
 
 ## License
 

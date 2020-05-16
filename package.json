@@ -1,9 +1,9 @@
 {
-  "name": "rollup-plugin-copy",
+  "name": "rollup-plugin-copy-watch",
   "description": "Copy files and folders using Rollup",
-  "version": "3.3.0",
+  "version": "0.0.0",
   "author": "Vlad Shcherbin <vlad.shcherbin@gmail.com>",
-  "repository": "vladshcherbin/rollup-plugin-copy",
+  "repository": "rixo/rollup-plugin-copy-watch",
   "main": "dist/index.commonjs.js",
   "module": "dist/index.module.js",
   "types": "index.d.ts",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/fs-extra": "^8.0.1",
+    "chokidar": "^3.4.0",
     "colorette": "^1.1.0",
     "fs-extra": "^8.1.0",
     "globby": "10.0.1",
