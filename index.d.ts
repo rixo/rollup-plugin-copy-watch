@@ -54,6 +54,11 @@ interface CopyOptions extends globby.GlobbyOptions, fs.CopyOptions {
      * @default false
      */
     readonly verbose?: boolean;
+    
+    /**
+     * Paths to files, dirs to be watched recursively, or glob patterns.
+     */
+    readonly watch?: string | string[];
 }
 
 /**
